@@ -13,6 +13,7 @@ from searches.algorithms import ALGORITHMS, search
 from searches.comparisons import compare, json_value, result_record, save_report
 from searches.core import SearchLimits, SearchResult
 from searches.problems import PROBLEMS, get_problem
+from searches.terminal import needs_ascii, supports_animation
 
 
 def _limits(args) -> SearchLimits:
@@ -118,6 +119,8 @@ def parser() -> argparse.ArgumentParser:
     run = commands.add_parser("run", help="Solve a problem or traverse a graph")
     run.add_argument("--problem", choices=PROBLEMS, required=True)
     run.add_argument("--algorithm", choices=ALGORITHMS, required=True)
+    run.add_argument("--no-animate", action="store_true", help="Use the plain text result display")
+    run.add_argument("--ascii", action="store_true", help="Use ASCII diagrams and borders")
     run.add_argument(
         "--traverse", action="store_true", help="Full numbered-graph BFS/DFS traversal"
     )
@@ -154,15 +157,31 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "run":
             if args.traverse and args.problem != "numbered_graph":
                 raise ValueError("--traverse is supported for numbered_graph")
-            result = search(
-                get_problem(args.problem),
-                args.algorithm,
+            problem = get_problem(args.problem)
+            options = dict(
                 limits=_limits(args),
                 trace=args.trace,
                 trace_limit=args.trace_limit,
                 snapshot_limit=args.snapshot_limit,
                 traversal=args.traverse,
             )
+            if not args.no_animate and supports_animation():
+                from searches.animation.app import run_animation
+                from searches.animation.channel import AnimationCancelled
+
+                try:
+                    result = run_animation(
+                        args.problem,
+                        problem,
+                        args.algorithm,
+                        ascii_only=args.ascii or needs_ascii(console.encoding),
+                        **options,
+                    )
+                except AnimationCancelled:
+                    console.print("Animation cancelled by user; no final search result.")
+                    return 130
+            else:
+                result = search(problem, args.algorithm, **options)
             _show_run(console, result)
             if args.json:
                 args.json.parent.mkdir(parents=True, exist_ok=True)

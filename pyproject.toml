@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "State-space search algorithms and reproducible teaching comparisons"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["matplotlib>=3.9", "rich>=13.9"]
+dependencies = [
+    "matplotlib>=3.9",
+    "rich>=13.9",
+    "textual>=1.0",
+]
 
 [project.scripts]
 searches = "searches.cli:main"
@@ -14,7 +18,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = ["pytest>=8.3", "ruff>=0.9"]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.9",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
