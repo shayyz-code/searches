@@ -9,12 +9,16 @@ from searches.algorithms import (
     uniform_cost_search,
 )
 from searches.core import Problem, SearchLimits, SearchResult, Transition
+from searches.events import NodeInfo, SearchEvent, StatsSnapshot
 
 __all__ = [
     "Problem",
     "SearchLimits",
     "SearchResult",
     "Transition",
+    "NodeInfo",
+    "SearchEvent",
+    "StatsSnapshot",
     "search",
     "a_star_search",
     "breadth_first_search",
