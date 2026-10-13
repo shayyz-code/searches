@@ -63,6 +63,10 @@ the measurement. Search bookkeeping and solution reconstruction are included.
 Python allocation memory excludes problem construction, native allocations,
 and interpreter/process memory; it is not RSS.
 
+Interactive `run` walkthroughs use separate execution events and subtract observer
+delivery and playback waits from search time. Comparison runs attach no observer;
+animation timing, metadata, and rendering are absent from these measurements.
+
 | Metric | Definition |
 | --- | --- |
 | Expanded | Nodes whose successors are explored, including leaves; excludes goals and depth-boundary probes |
